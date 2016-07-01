@@ -1,0 +1,48 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package store.servlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import store.entity.Utilisateur;
+import store.service.UtilisateurService;
+
+/**
+ *
+ * @author admin
+ */
+@WebServlet(name = "ConnexionBtnEnvoyerServlet", urlPatterns = {"/connexion"})
+public class ConnexionServlet extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+        // on recupere le login et mdp lorsque l on clique sur envoyer
+        String login = req.getParameter("login");
+        String mdp = req.getParameter("mdp");
+        
+        
+       // verifier utilisateur existe en base 
+        Utilisateur u = new UtilisateurService().rechercherParLoginEtMdp(login, mdp);
+        
+        // mettre en session l'utilisateur pr eviter les deco
+        req.getSession().setAttribute("utilisateur", u);
+        
+       resp.sendRedirect("article_liste"); 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("connexion.jsp").forward(req, resp);
+    }
+
+ 
+}
